@@ -1,14 +1,25 @@
+import React from "react";
+import { RouterProvider } from "react-router-dom";
+
+import { router } from "./routes/router";
+
+import AuthProvider from "./context/AuthContext";
 
 
+const  App = () => {
 
-function App() {
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-200">
-      <button className="btn btn-primary">
-        SkillSwap
-      </button>
-    </div>
+
+    <AuthProvider>
+
+      <RouterProvider router={router} />
+
+    </AuthProvider>
+
   );
+
 }
+
 
 export default App;
