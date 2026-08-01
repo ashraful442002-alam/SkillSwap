@@ -1,75 +1,69 @@
-import React, {
-    createContext,
-    useEffect,
-    useState
-} from "react";
-
-
+import { createContext, useContext, useEffect, useState } from "react";
 import {
-    onAuthStateChanged
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  updateProfile,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
 } from "firebase/auth";
+import app from "../firebase/firebase.config";
 
+const auth = getAuth(app);
 
-import { auth } from "../firebase/firebase.config";
+const AuthContext = createContext(null);
 
+export const useAuth = () => useContext(AuthContext);
 
+export default function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-export const AuthContext = createContext();
+  // Listen to login state
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+    return unsubscribe;
+  }, []);
 
+  // Register with email & password
+  const register = (email, password) =>
+    createUserWithEmailAndPassword(auth, email, password);
 
+  // Login with email & password
+  const login = (email, password) =>
+    signInWithEmailAndPassword(auth, email, password);
 
-const AuthProvider = ({children}) => {
+  // Login with Google
+  const loginWithGoogle = () =>
+    signInWithPopup(auth, new GoogleAuthProvider());
 
+  // Logout
+  const logout = () => signOut(auth);
 
-    const [user,setUser] = useState(null);
+  // Update display name / photo
+  const updateUserProfile = (profile) =>
+    updateProfile(auth.currentUser, profile);
 
-    const [loading,setLoading] = useState(true);
+  // Forgot password
+  const resetPassword = (email) =>
+    sendPasswordResetEmail(auth, email);
 
+  const value = {
+    user,
+    loading,
+    register,
+    login,
+    loginWithGoogle,
+    logout,
+    updateUserProfile,
+    resetPassword,
+  };
 
-
-    useEffect(()=>{
-
-
-        const unsubscribe = onAuthStateChanged(
-            auth,
-            currentUser=>{
-
-                setUser(currentUser);
-
-                setLoading(false);
-
-            }
-        );
-
-
-        return ()=>unsubscribe();
-
-
-    },[]);
-
-
-
-    const authInfo = {
-
-        user,
-        loading
-
-    };
-
-
-
-    return (
-
-        <AuthContext.Provider value={authInfo}>
-
-            {children}
-
-        </AuthContext.Provider>
-
-    );
-
-};
-
-
-
-export default AuthProvider;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}

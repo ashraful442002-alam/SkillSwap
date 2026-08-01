@@ -1,10 +1,17 @@
 import React from "react";
+import Hero from "../../components/home/Hero";
+import FeaturedCategories from "../../components/home/FeaturedCategories";
+import LatestSkills from "../../components/home/LatestSkills";
+import HowItWorks from "../../components/home/HowItWorks";
 
 const Home = () => {
   return (
-    <div>
-      <h1>Home Page</h1>
-    </div>
+    <>
+      <Hero />
+      <FeaturedCategories />
+      <LatestSkills />
+      <HowItWorks />
+    </>
   );
 };
 
