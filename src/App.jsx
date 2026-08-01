@@ -1,9 +1,10 @@
-import React from "react";
 
-const App = () => {
+
+
+function App() {
   return (
-        <div>
-      <h1>Hello React</h1>
+    <div>
+      <h1>SkillSwap</h1>
     </div>
   );
 }
